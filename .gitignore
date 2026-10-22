@@ -1,0 +1,13 @@
+node_modules/
+engine/**/bin/
+engine/**/obj/
+
+# iOS: the Xcode project is generated from ios-app/project.yml by XcodeGen
+ios-app/Handshake.xcodeproj/
+ios-app/build/
+ios-app/Payload/
+*.ipa
+__pycache__/
+
+# Screenshots show the local pairing code and LAN address
+captures/

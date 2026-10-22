@@ -1,0 +1,9 @@
+{
+  "name": "Handshake",
+  "short_name": "Handshake",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#f5efe1",
+  "theme_color": "#f5efe1",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

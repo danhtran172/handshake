@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="vi" data-tone="cream">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src ws://127.0.0.1:*; style-src 'self' 'unsafe-inline'">
+  <title>Handshake</title>
+  <link rel="stylesheet" href="../shared/paper.css">
+  <link rel="stylesheet" href="pc.css">
+</head>
+<body>
+  <aside class="spine">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" class="logo" aria-hidden="true">
+        <rect x="5" y="9" width="26" height="18" rx="2.5" class="sk"/>
+        <path d="M13 31h10M18 27v4" class="sk"/>
+        <rect x="31" y="17" width="12" height="22" rx="3" class="sk"/>
+        <path d="M35.5 35h3" class="sk"/>
+        <path d="M24 18c3-3 6-3 9 0" class="sk accent-stroke"/>
+      </svg>
+      <div>
+        <div class="serif brand-name">Handshake</div>
+        <div class="faint">PC ⇄ iPhone</div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Trang">
+      <button class="nav-item" data-go="home" aria-current="page">
+        <svg viewBox="0 0 24 24" class="sk"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg>
+        Tổng quan
+      </button>
+      <button class="nav-item" data-go="display">
+        <svg viewBox="0 0 24 24" class="sk"><rect x="2" y="5" width="13" height="10" rx="1.5"/><rect x="16" y="8" width="6" height="11" rx="1.5"/><path d="M6 19h5"/></svg>
+        Màn hình phụ
+      </button>
+      <button class="nav-item" data-go="mirror">
+        <svg viewBox="0 0 24 24" class="sk"><rect x="3" y="3" width="8" height="15" rx="1.5"/><path d="M13 10h7M17 7l3 3-3 3"/></svg>
+        Nhận từ iPhone
+      </button>
+      <button class="nav-item" data-go="perf">
+        <svg viewBox="0 0 24 24" class="sk"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><path d="M4 21h16"/></svg>
+        Hiệu năng
+      </button>
+      <button class="nav-item" data-go="settings">
+        <svg viewBox="0 0 24 24" class="sk"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+        Cài đặt
+      </button>
+    </nav>
+
+    <div class="spine-foot">
+      <button class="btn ghost small" id="btnPreview" title="Mở một cửa sổ giả lập phía iPhone để thử">Xem thử phía iPhone</button>
+      <button class="btn ghost small" id="btnMockup">Mockup app iOS</button>
+      <div class="faint server-line"><span class="dot" id="serverDot"></span><span id="serverText">Đang khởi động…</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle"><span class="underline">Tổng quan</span></h1>
+        <p class="faint" id="pageSub">Kết nối iPhone và chọn cách dùng</p>
+      </div>
+      <div class="topbar-right">
+        <span class="pill" id="devicePill"><span class="dot"></span>0 iPhone</span>
+        <span class="pill" id="sessionPill"><span class="dot"></span>Đang chờ</span>
+      </div>
+    </header>
+
+    <!-- ============================================================ HOME -->
+    <section class="page" data-page="home">
+      <div class="grid-home">
+        <div class="card tape connect-card">
+          <h2>Quét để kết nối</h2>
+          <p class="muted">Mở <b>Camera</b> trên iPhone, quét mã, rồi mở bằng Safari. iPhone và PC cần chung Wi‑Fi.</p>
+          <div class="qr-wrap"><img id="qr" alt="Mã QR kết nối"></div>
+          <div class="url-line">
+            <code class="mono" id="url">…</code>
+            <button class="btn small" id="btnCopy">Chép</button>
+          </div>
+          <p class="faint">Mã ghép nối: <b class="mono" id="token">…</b> · lưu trên máy này</p>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-head">
+              <h2>iPhone đã kết nối</h2>
+              <span class="faint" id="deviceCount"></span>
+            </div>
+            <div id="deviceList"></div>
+          </div>
+
+          <div class="modes">
+            <button class="mode-card" data-mode="display">
+              <svg viewBox="0 0 96 64" aria-hidden="true">
+                <rect x="4" y="8" width="52" height="34" rx="3" class="sk"/>
+                <path d="M22 50h16M30 42v8" class="sk"/>
+                <rect x="64" y="14" width="28" height="44" rx="5" class="sk"/>
+                <path d="M60 30c-4-6-8-6-12 0" class="sk accent-stroke" />
+                <rect x="68" y="20" width="20" height="30" rx="1" class="fill-mark"/>
+              </svg>
+              <span class="serif mode-title">Làm màn hình phụ</span>
+              <span class="faint">PC → iPhone · kéo cửa sổ sang iPhone, chạm để điều khiển</span>
+            </button>
+            <button class="mode-card" data-mode="mirror">
+              <svg viewBox="0 0 96 64" aria-hidden="true">
+                <rect x="4" y="10" width="26" height="46" rx="5" class="sk"/>
+                <rect x="8" y="16" width="18" height="32" rx="1" class="fill-mark"/>
+                <path d="M34 33c6-6 12-6 18 0" class="sk accent-stroke"/>
+                <rect x="40" y="8" width="52" height="34" rx="3" class="sk"/>
+                <path d="M58 50h16M66 42v8" class="sk"/>
+              </svg>
+              <span class="serif mode-title">Phát iPhone lên PC</span>
+              <span class="faint">iPhone → PC · trình chiếu, quay màn hình, demo app</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ DISPLAY -->
+    <section class="page" data-page="display" hidden>
+      <div class="grid-split">
+        <div class="stack">
+          <div class="card">
+            <div class="card-head">
+              <h2>Chọn màn hình gửi sang iPhone</h2>
+            </div>
+            <div class="display-map" id="displayMap" aria-label="Sơ đồ màn hình"></div>
+            <p class="faint" id="displayHint"></p>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Gửi tới</h2></div>
+            <div id="displayTargets"></div>
+            <div class="actions">
+              <button class="btn primary" id="btnDisplayStart">Bắt đầu</button>
+              <button class="btn danger" id="btnDisplayStop" hidden>Dừng</button>
+            </div>
+          </div>
+          <div class="card flat tip" id="vddTip">
+            <h3>Muốn iPhone là màn hình <span class="mark">mở rộng</span>?</h3>
+            <p class="muted">Windows cần một màn hình ảo để có thêm chỗ kéo cửa sổ. Cài driver màn hình ảo (ví dụ <i>Virtual Display Driver</i>, mã nguồn mở), màn hình mới sẽ hiện trong sơ đồ ở trên. Không có driver thì iPhone sẽ hiển thị bản sao một màn hình đang có.</p>
+          </div>
+        </div>
+
+        <div class="card stage-card">
+          <div class="card-head">
+            <h2>Đang hiển thị trên iPhone</h2>
+            <span class="faint mono" id="displayStats"></span>
+          </div>
+          <div class="stage landscape">
+            <div class="phone-frame landscape">
+              <video id="displayPreview" muted playsinline autoplay></video>
+              <div class="empty" id="displayEmpty">
+                <p class="serif">Chưa phát</p>
+                <p class="faint">Chọn màn hình và iPhone rồi bấm “Bắt đầu”</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ MIRROR -->
+    <section class="page" data-page="mirror" hidden>
+      <div class="grid-split mirror-grid">
+        <div class="card stage-card">
+          <div class="card-head">
+            <h2>Màn hình iPhone</h2>
+            <span class="faint mono" id="mirrorStats"></span>
+          </div>
+          <div class="stage">
+            <div class="phone-frame" id="mirrorFrame">
+              <video id="mirrorVideo" playsinline autoplay></video>
+              <div class="empty" id="mirrorEmpty">
+                <p class="serif">Chưa có hình</p>
+                <p class="faint">Trên iPhone chọn “Phát lên PC”</p>
+              </div>
+            </div>
+          </div>
+          <div class="actions center">
+            <button class="btn small" id="btnRotate">Xoay</button>
+            <button class="btn small" id="btnShot">Chụp màn hình</button>
+            <button class="btn small" id="btnRecord">Quay video</button>
+            <button class="btn small" id="btnFull">Toàn màn hình</button>
+            <button class="btn small danger" id="btnMirrorStop" hidden>Dừng</button>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Nhận từ</h2></div>
+            <div id="mirrorTargets"></div>
+            <div class="actions">
+              <button class="btn primary" id="btnMirrorStart">Yêu cầu iPhone phát</button>
+            </div>
+          </div>
+          <div class="card flat tip">
+            <h3>Phát màn hình thật của iPhone</h3>
+            <p class="muted">Safari không cho trang web chụp màn hình iPhone. Bản web hiện phát một <span class="mark">màn hình demo</span> để thử đường truyền. App iOS (xem <a href="#" id="linkMockup">mockup</a>) sẽ dùng <b>ReplayKit</b> để phát toàn bộ màn hình, cùng giao thức này.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ PERF -->
+    <section class="page" data-page="perf" hidden>
+      <div class="grid-split">
+        <div class="stack">
+          <div class="card">
+            <div class="card-head">
+              <h2>Đo engine native</h2>
+              <span class="pill" id="perfEnginePill"><span class="dot"></span>Đang kiểm tra…</span>
+            </div>
+            <div class="settings-stack flush" id="perfForm"></div>
+            <div class="field">
+              <label>Thử rút cáp giữa chừng<span class="hint">Mở 2 đường (cáp + Wi‑Fi), ngắt đường chính ở giây thứ 3</span></label>
+              <input type="checkbox" class="toggle" id="perfFailover">
+            </div>
+            <div class="actions">
+              <button class="btn primary" id="btnBench">Chạy đo 8 giây</button>
+              <span class="faint" id="perfProgress"></span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Phần cứng</h2></div>
+            <div id="perfHardware" class="faint">Đang đọc…</div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h2>Engine cho app iOS</h2>
+              <input type="checkbox" class="toggle" id="engineHostToggle" aria-label="Bật engine host">
+            </div>
+            <p class="faint" id="engineHostStatus">Tắt · app iOS native sẽ kết nối vào cổng 7430</p>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-head">
+              <h2>Kết quả</h2>
+              <span class="faint mono" id="perfConfig"></span>
+            </div>
+            <div class="perf-big" id="perfBig">
+              <div class="perf-tile"><b id="pFps">–</b><span>khung/giây</span></div>
+              <div class="perf-tile"><b id="pP50">–</b><span>độ trễ p50</span></div>
+              <div class="perf-tile"><b id="pP99">–</b><span>độ trễ p99</span></div>
+              <div class="perf-tile"><b id="pMbps">–</b><span>Mbit/s</span></div>
+            </div>
+            <div class="perf-chart" id="perfChart" aria-label="Khung hình mỗi giây"></div>
+            <div class="perf-legend faint"><span><i class="sw fps"></i>fps mỗi giây</span><span><i class="sw lat"></i>độ trễ p50 (ms)</span></div>
+            <div class="perf-split" id="perfSplit"></div>
+            <div id="perfEvents" class="perf-events faint"></div>
+          </div>
+          <div class="card flat tip">
+            <h3>Đo cái gì?</h3>
+            <p class="muted">Từ lúc khung hình được tạo trên PC → nén bằng GPU → gửi qua mạng → giải mã → GPU vẽ xong. Client test chạy trên GPU còn lại để đóng vai iPhone. <span class="mark">Màn hình thật</span> dùng một cửa sổ chuyển động 144 Hz làm nguồn.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ SETTINGS -->
+    <section class="page" data-page="settings" hidden>
+      <div class="grid-split">
+        <div class="card lined">
+          <div class="card-head">
+            <h2>Cài đặt chung</h2>
+            <span class="pill ok"><span class="dot"></span>Đồng bộ với iPhone</span>
+          </div>
+          <div class="settings-stack flush" id="settingsPanel"></div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <h2>Đồng bộ hai bên</h2>
+            <p class="muted" style="margin-top:8px">Mọi thay đổi ở đây hiện ngay trên iPhone và ngược lại. Mục vừa được bên kia đổi sẽ nháy vàng.</p>
+          </div>
+          <div class="card">
+            <h2>Máy tính này</h2>
+            <div class="row"><div class="grow"><div class="title">Tên</div><div class="sub" id="pcName"></div></div></div>
+            <div class="row"><div class="grow"><div class="title">Địa chỉ</div><div class="sub mono" id="pcAddrs"></div></div></div>
+            <div class="row"><div class="grow"><div class="title">Màn hình</div><div class="sub" id="pcDisplays"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/state.js"></script>
+  <script src="../shared/client.js"></script>
+  <script src="../shared/rtc.js"></script>
+  <script src="../shared/ui.js"></script>
+  <script src="app.js"></script>
+  <script src="perf.js"></script>
+</body>
+</html>

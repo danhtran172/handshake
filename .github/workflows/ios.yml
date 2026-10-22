@@ -1,0 +1,65 @@
+# Builds the native iOS app on a macOS runner (no Mac needed locally) and uploads an UNSIGNED .ipa.
+# Sign and install it from Windows with Sideloadly (free Apple ID: re-sign every 7 days).
+name: iOS IPA
+
+on:
+  push:
+    paths:
+      - "ios-app/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ios-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Build (no code signing)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Handshake.xcodeproj \
+            -target Handshake \
+            -configuration Release \
+            -sdk iphoneos \
+            SYMROOT="$PWD/build" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            | tee build.log | grep -E "error:|warning:|BUILD (SUCCEEDED|FAILED)" || true
+          test -d build/Release-iphoneos/Handshake.app
+
+      - name: Package unsigned IPA
+        run: |
+          rm -rf Payload
+          mkdir Payload
+          cp -R build/Release-iphoneos/Handshake.app Payload/
+          ls Payload/Handshake.app/PlugIns
+          zip -qry Handshake-unsigned.ipa Payload
+          ls -lh Handshake-unsigned.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Handshake-unsigned-ipa
+          path: ios-app/Handshake-unsigned.ipa
+          if-no-files-found: error
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: ios-app/build.log

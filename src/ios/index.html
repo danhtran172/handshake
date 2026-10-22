@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi" data-tone="cream">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Handshake">
+  <meta name="theme-color" content="#f5efe1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>Handshake</title>
+  <link rel="stylesheet" href="../shared/paper.css">
+  <link rel="stylesheet" href="ios.css">
+</head>
+<body>
+  <!-- ============================================================ HOME -->
+  <div class="screen" id="home">
+    <header class="ios-head">
+      <div class="brand-row">
+        <svg viewBox="0 0 48 48" class="logo" aria-hidden="true">
+          <rect x="5" y="9" width="26" height="18" rx="2.5" class="sk"/>
+          <path d="M13 31h10M18 27v4" class="sk"/>
+          <rect x="31" y="17" width="12" height="22" rx="3" class="sk"/>
+          <path d="M24 18c3-3 6-3 9 0" class="sk accent-stroke"/>
+        </svg>
+        <h1>Handshake</h1>
+      </div>
+      <span class="pill" id="sessionPill"><span class="dot"></span>Đang chờ</span>
+    </header>
+
+    <div class="card tape pc-card">
+      <div class="pc-row">
+        <svg viewBox="0 0 64 48" class="pc-icon" aria-hidden="true">
+          <rect x="4" y="4" width="56" height="34" rx="3" class="sk"/>
+          <path d="M24 44h16M32 38v6" class="sk"/>
+        </svg>
+        <div class="grow">
+          <div class="serif pc-name" id="pcName">Đang tìm PC…</div>
+          <div class="faint" id="pcSub">Kết nối qua Wi‑Fi</div>
+        </div>
+        <span class="status-dot" id="connDot" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <h2 class="section-title">Bạn muốn làm gì?</h2>
+    <div class="mode-list">
+      <button class="mode-card" data-mode="display">
+        <svg viewBox="0 0 96 64" aria-hidden="true">
+          <rect x="4" y="8" width="52" height="34" rx="3" class="sk"/>
+          <path d="M22 50h16M30 42v8" class="sk"/>
+          <rect x="64" y="14" width="28" height="44" rx="5" class="sk"/>
+          <path d="M60 30c-4-6-8-6-12 0" class="sk accent-stroke"/>
+          <rect x="68" y="20" width="20" height="30" rx="1" class="fill-mark"/>
+        </svg>
+        <div>
+          <div class="serif mode-title">Làm màn hình phụ</div>
+          <div class="faint">Hiện màn hình PC, chạm để điều khiển</div>
+        </div>
+      </button>
+      <button class="mode-card" data-mode="mirror">
+        <svg viewBox="0 0 96 64" aria-hidden="true">
+          <rect x="4" y="10" width="26" height="46" rx="5" class="sk"/>
+          <rect x="8" y="16" width="18" height="32" rx="1" class="fill-mark"/>
+          <path d="M34 33c6-6 12-6 18 0" class="sk accent-stroke"/>
+          <rect x="40" y="8" width="52" height="34" rx="3" class="sk"/>
+          <path d="M58 50h16M66 42v8" class="sk"/>
+        </svg>
+        <div>
+          <div class="serif mode-title">Phát lên PC</div>
+          <div class="faint">Đưa màn hình iPhone lên máy tính</div>
+        </div>
+      </button>
+    </div>
+
+    <h2 class="section-title">Cài đặt <span class="faint sync-note">· đồng bộ với PC</span></h2>
+    <div class="card lined settings-stack" id="settingsPanel"></div>
+
+    <div class="card flat name-card">
+      <div class="field">
+        <label for="deviceName">Tên iPhone này<span class="hint">Hiện trên PC</span></label>
+        <input id="deviceName" class="text-input" maxlength="40" autocomplete="off">
+      </div>
+    </div>
+    <p class="faint foot-note">Mẹo: Chia sẻ → “Thêm vào MH chính” để mở toàn màn hình như một app.</p>
+  </div>
+
+  <!-- ============================================================ DISPLAY VIEWER -->
+  <div class="screen viewer" id="viewer" hidden>
+    <video id="remoteVideo" playsinline autoplay muted></video>
+    <canvas id="jpegCanvas" hidden></canvas>
+    <div class="touch-layer" id="touchLayer"></div>
+    <div class="viewer-wait" id="viewerWait">
+      <div class="card tape">
+        <p class="serif">Đang nhận màn hình PC…</p>
+        <p class="faint" id="viewerWaitSub">Chờ PC bắt đầu phát</p>
+      </div>
+    </div>
+    <button class="handle" id="toolbarHandle" aria-label="Hiện thanh công cụ"></button>
+    <div class="toolbar" id="toolbar">
+      <button class="btn small" id="btnExit">Thoát</button>
+      <div class="seg" id="touchSeg">
+        <button type="button" data-value="touch">Chạm</button>
+        <button type="button" data-value="trackpad">Bàn di</button>
+      </div>
+      <span class="faint mono" id="viewerStats"></span>
+    </div>
+  </div>
+
+  <!-- ============================================================ MIRROR (web demo sender) -->
+  <div class="screen" id="mirror" hidden>
+    <header class="ios-head">
+      <h1>Phát lên PC</h1>
+      <span class="pill live" id="mirrorPill"><span class="dot"></span>Đang kết nối…</span>
+    </header>
+    <div class="card tape">
+      <p class="muted">Safari không cho trang web quay màn hình iPhone, nên bản web phát một <span class="mark">màn hình demo</span> để thử đường truyền. App iOS sẽ phát màn hình thật bằng ReplayKit.</p>
+    </div>
+    <div class="demo-wrap">
+      <canvas id="demoCanvas" width="390" height="844"></canvas>
+    </div>
+    <p class="faint center" id="mirrorStats"></p>
+    <button class="btn danger wide" id="btnMirrorStop">Dừng phát</button>
+  </div>
+
+  <script src="../shared/state.js"></script>
+  <script src="../shared/client.js"></script>
+  <script src="../shared/rtc.js"></script>
+  <script src="../shared/ui.js"></script>
+  <script src="ios.js"></script>
+</body>
+</html>

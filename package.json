@@ -1,0 +1,25 @@
+{
+  "name": "handshake",
+  "productName": "Handshake",
+  "version": "0.1.0",
+  "description": "Kết nối PC và iPhone: phát màn hình iPhone lên PC, dùng iPhone làm màn hình phụ",
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "snapshot": "electron . --snapshot=captures/ui-pc.png",
+    "shortcut": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/create-shortcut.ps1",
+    "icon": "electron tools/make-icon.js",
+    "engine:build": "dotnet build engine/HsEngine -c Release",
+    "engine:bench": "engine\\HsEngine\\bin\\Release\\net10.0-windows\\hs-engine.exe bench --seconds 8 --headless --gpu amd --client-gpu nvidia --size 2556x1179 --kbps 50000",
+    "engine:mirror": "engine\\HsEngine\\bin\\Release\\net10.0-windows\\hs-engine.exe mirror --port 7432"
+  },
+  "dependencies": {
+    "qrcode": "1.5.4",
+    "ws": "8.18.3"
+  },
+  "devDependencies": {
+    "electron": "44.9.3"
+  }
+}
