@@ -11,3 +11,4 @@ __pycache__/
 
 # Screenshots show the local pairing code and LAN address
 captures/
+dist/
